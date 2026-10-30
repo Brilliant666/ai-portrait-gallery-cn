@@ -593,7 +593,7 @@ function readHash(){
 
 /* ── 首屏 ── */
 // 首屏配图：人工挑选的三张，左侧竖图 + 右侧两张横图
-const HERO_IDS = ['fd88e2d27b2', 'f8ef1f742be', 'fbb3f167ec2'];
+const HERO_IDS = ['f08cf714921', 'f1ccdcb539e', 'f1319c5c414'];
 
 function drawHero(){
   const byId = id => ITEMS.find(i => i.i === id);
