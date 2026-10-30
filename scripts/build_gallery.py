@@ -37,11 +37,11 @@ for r in rows:
         "f": r["full_path"],
         "w": r["宽"],
         "h": r["高"],
+        "b": r["原图字节"],
     })
 
 payload = json.dumps({
     "items": items,
-    "ranking": ranking,
     "ui": UI,
     "tips": TIPS,
     "rules": RULES,
@@ -142,42 +142,26 @@ img{max-width:100%}
   background:var(--accent);color:var(--accent-fg);border-radius:999px;
   padding:13px 28px;font-size:.9rem;letter-spacing:.08em;transition:opacity .2s}
 .cta:hover{opacity:.86}
-.hero-faces{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,1.2vw,14px)}
-.hero-faces img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;
-  border-radius:10px;background:var(--line)}
-.hero-faces img:nth-child(1){transform:translateY(-10px)}
-.hero-faces img:nth-child(2){transform:translateY(8px)}
-.hero-faces img:nth-child(3){transform:translateY(-4px)}
-.hero-faces img:nth-child(4){transform:translateY(12px)}
-.hero-faces img:nth-child(5){transform:translateY(10px)}
-.hero-faces img:nth-child(6){transform:translateY(-8px)}
-.hero-faces img:nth-child(7){transform:translateY(4px)}
-.hero-faces img:nth-child(8){transform:translateY(-12px)}
+.hero-faces{position:relative;display:grid;grid-template-columns:1.25fr 1fr;
+  grid-template-rows:auto auto;gap:clamp(10px,1.4vw,18px);max-width:520px}
+.hero-faces img{display:block;width:100%;height:100%;object-fit:cover;
+  border-radius:12px;background:var(--line)}
+.hero-faces img:nth-child(1){grid-row:span 2;aspect-ratio:3/4.6}
+.hero-faces img:nth-child(2){aspect-ratio:4/3.1}
+.hero-faces img:nth-child(3){aspect-ratio:4/3.1}
+
+/* 卡片下载按钮 */
+.dl{display:inline-flex;align-items:center;gap:4px;text-decoration:none;font-size:.72rem;
+  letter-spacing:.08em;color:var(--fg);border:1px solid var(--line);border-radius:999px;
+  padding:3px 10px 3px 8px;transition:all .2s ease;flex:none}
+.dl:hover{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.dl svg{display:block}
 
 /* ── 通用标题 ── */
 .section-title{margin:0;font-family:var(--latin);font-size:clamp(1.4rem,2.4vw,1.9rem);
   letter-spacing:.04em;font-weight:500;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .section-title span{font-family:var(--sans);font-size:.8rem;letter-spacing:.14em;color:var(--muted)}
 
-/* ── 排行榜 ── */
-.ranking{margin:clamp(20px,4vw,44px) 0 0;padding:clamp(20px,3vw,32px);
-  border:1px solid var(--line);border-radius:var(--radius);background:var(--paper)}
-.ranking[hidden]{display:none}
-.rank-tabs{display:flex;gap:8px;overflow-x:auto;margin:18px 0 4px;scrollbar-width:none}
-.rank-tabs::-webkit-scrollbar{display:none}
-.rank-tabs button{flex:none;font:inherit;font-size:.82rem;cursor:pointer;letter-spacing:.06em;
-  background:transparent;color:var(--fg);border:1px solid var(--line);border-radius:999px;
-  padding:5px 14px;transition:.18s}
-.rank-tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
-.rank-list{list-style:none;margin:14px 0 0;padding:0;display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:clamp(10px,1.4vw,18px)}
-.rank-list li{counter-increment:rank}
-.rank-list a{display:block;text-decoration:none;position:relative}
-.rank-list img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;
-  border-radius:10px;background:var(--line)}
-.rank-list .rk{position:absolute;top:8px;left:8px;min-width:22px;height:22px;border-radius:999px;
-  background:rgba(18,16,14,.72);color:#fff;font-size:.72rem;display:grid;place-items:center;
-  font-variant-numeric:tabular-nums;padding:0 6px}
 
 /* ── 工具栏 ── */
 .toolbar{margin:clamp(32px,5vw,56px) 0 0}
@@ -217,9 +201,9 @@ img{max-width:100%}
   opacity:0;transition:opacity .3s ease}
 .card:hover img{transform:scale(1.04)}
 .card:hover .thumb-btn::after{opacity:1}
-.card .meta{display:flex;align-items:flex-start;gap:8px;padding:0 2px}
-.card .label{font-size:.74rem;color:var(--muted);letter-spacing:.06em;line-height:1.6;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .meta{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px}
+.card .label{font-size:.74rem;color:var(--muted);letter-spacing:.1em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .empty{margin:40px 0;text-align:center;color:var(--muted);font-size:.9rem}
 .empty[hidden]{display:none}
 .more-wrap{display:flex;justify-content:center;margin:34px 0 0}
@@ -313,14 +297,6 @@ img{max-width:100%}
 </header>
 
 <main class="wrap" id="gallery">
-  <section id="ranking" class="ranking" aria-labelledby="ranking-title">
-    <div class="ranking-head">
-      <h2 class="section-title" id="ranking-title"><span data-t="rankTitle">下载排行</span><span data-t="rankSub">Top 10</span></h2>
-    </div>
-    <div id="rank-tabs" class="rank-tabs" role="tablist" aria-label="排行分类"></div>
-    <ol id="rank-list" class="rank-list" role="tabpanel" aria-labelledby="ranking-title"></ol>
-  </section>
-
   <div class="toolbar">
     <div class="toolbar-head">
       <h2 class="section-title"><span data-t="galleryTitle">图库</span><span data-t="gallerySub">按发型筛选</span></h2>
@@ -396,6 +372,8 @@ const hairName = it => LANG === 'ja' ? it.hj : it.hz;
 const styleName = it => LANG === 'ja' ? it.sj : it.sz;
 const labelOf = it => { const s = styleName(it); return s ? hairName(it) + '・' + s : hairName(it); };
 const fmt = n => Number(n).toLocaleString('zh-CN');
+const mb = b => (b / 1048576).toFixed(1) + ' MB';
+const dlName = it => (it.s === 'face' ? 'ai-face-' : 'ai-styling-') + it.i + '.png';
 
 const grid = $('#grid'), countEl = $('#count'), moreEl = $('#more'), emptyEl = $('#empty');
 
@@ -462,12 +440,20 @@ function hairZhOf(h){
 }
 
 /* ── 卡片 ── */
+const DL_ICON = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">' +
+  '<path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" ' +
+  'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
 function card(it, i){
+  const hair = LANG === 'ja' ? it.hj : it.hz;
   return '<li class="card" data-i="' + i + '">' +
     '<button class="thumb-btn" type="button" aria-label="' + esc(labelOf(it)) + '">' +
       '<img loading="lazy" decoding="async" src="' + esc(it.t) + '" alt="' + esc(labelOf(it)) + '">' +
     '</button>' +
-    '<div class="meta"><span class="label">' + esc(labelOf(it)) + '</span></div></li>';
+    '<div class="meta"><span class="label">' + esc(hair) + '</span>' +
+      '<a class="dl" href="' + esc(it.f) + '" download="' + esc(dlName(it)) + '"' +
+        ' title="PNG ' + mb(it.b) + '" aria-label="下载 PNG（' + mb(it.b) + '）">' +
+        DL_ICON + '<span>PNG</span></a></div></li>';
 }
 
 let VIEW = [];
@@ -498,41 +484,6 @@ function syncMore(){
   const rest = VIEW.length - S.n;
   moreEl.hidden = rest <= 0;
   moreEl.textContent = t('more') + '（' + fmt(rest) + '）';
-}
-
-/* ── 排行 ── */
-function drawRanking(){
-  const R = DB.ranking;
-  if (!R || !R.cats || !R.top) return;
-  const cats = R.cats;
-  let cur = cats[0];
-  $('#rank-tabs').innerHTML = cats.map((c, i) =>
-    '<button type="button" role="tab" data-cat="' + esc(c) + '" aria-selected="' + (i === 0) + '">' +
-    esc(LANG === 'ja' ? c : (c === '総合' ? '总榜' : hairZhOf(c))) + '</button>').join('');
-  const render = () => {
-    const ids = R.top[cur] || [];
-    $('#rank-list').innerHTML = ids.map((id, i) => {
-      const it = ITEMS.find(x => x.i === id);
-      if (!it) return '';
-      return '<li><a href="#" data-rank="' + esc(id) + '">' +
-        '<img loading="lazy" decoding="async" src="' + esc(it.t) + '" alt="' + esc(labelOf(it)) + '">' +
-        '<span class="rk">' + (i + 1) + '</span></a></li>';
-    }).join('');
-  };
-  render();
-  $('#rank-tabs').addEventListener('click', e => {
-    const b = e.target.closest('[data-cat]'); if (!b) return;
-    cur = b.dataset.cat;
-    $('#rank-tabs').querySelectorAll('[data-cat]').forEach(x =>
-      x.setAttribute('aria-selected', x === b ? 'true' : 'false'));
-    render();
-  });
-  $('#rank-list').addEventListener('click', e => {
-    const a = e.target.closest('[data-rank]'); if (!a) return;
-    e.preventDefault();
-    const it = ITEMS.find(x => x.i === a.dataset.rank);
-    if (it) openLb(it, [it]);
-  });
 }
 
 /* ── 灯箱 ── */
@@ -608,7 +559,7 @@ $('#langSw').addEventListener('click', e => {
   e.preventDefault();
   LANG = LANG === 'ja' ? 'zh' : 'ja';
   localStorage.setItem('pt.lang', LANG);
-  applyStatic(); drawSections(); drawFilters(); drawRanking(); draw();
+  applyStatic(); drawSections(); drawFilters(); draw();
   if (!$('#lightbox').hidden) showLb();
 });
 
@@ -642,19 +593,15 @@ function readHash(){
 
 /* ── 首屏 ── */
 function drawHero(){
-  const faces = ITEMS.filter(i => i.s === 'face');
-  const pick = [];
-  const seen = new Set();
-  for (const it of faces){
-    if (pick.length >= 8) break;
-    if (seen.has(it.hj)) continue;
-    seen.add(it.hj); pick.push(it);
-  }
-  for (const it of faces){ if (pick.length >= 8) break; if (!pick.includes(it)) pick.push(it); }
+  // 首屏 3 图：左侧一张竖图 + 右侧两张横图，与原站布局一致
+  const face = ITEMS.filter(i => i.s === 'face');
+  const sty  = ITEMS.filter(i => i.s === 'styling');
+  const at = (arr, p) => arr[Math.floor(arr.length * p)] || arr[0];
+  const pick = [at(face, 0.62), at(sty, 0.18), at(sty, 0.74)];
   $('#hero-faces').innerHTML = pick.map(it =>
     '<img loading="eager" decoding="async" src="' + esc(it.t) + '" alt="">').join('');
-  $('#stat-face').textContent = fmt(ITEMS.filter(i => i.s === 'face').length);
-  $('#stat-styling').textContent = fmt(ITEMS.filter(i => i.s === 'styling').length);
+  $('#stat-face').textContent = fmt(face.length);
+  $('#stat-styling').textContent = fmt(sty.length);
 }
 
 applyStatic();
@@ -662,7 +609,6 @@ readHash();
 drawHero();
 drawSections();
 drawFilters();
-drawRanking();
 draw();
 </script>
 </body>

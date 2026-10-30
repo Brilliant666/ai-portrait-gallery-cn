@@ -28,8 +28,8 @@
 - 🏷️ **50 条风格描述汉化**：日本美发术语逐条译为中文（如「くびれショート」→「内收短发」）
 - 📄 **分页加载**：每页 60 张，滚动预取 800px 自动追加，与原站一致
 - 🖼️ **灯箱**：缩略图 → 原图渐进加载，`←` `→` 翻页，`Esc` 关闭
-- ⬇️ **一键下载原图**：灯箱内直接下载原尺寸 PNG
-- 🏆 **下载排行**：总榜 + 4 类发型 Top 10
+- 🏷️ **卡片信息**：仅显示发型 + PNG 下载按钮，保持图片视觉占比
+- ⬇️ **一键下载原图**：卡片上直接下载（带体积提示），灯箱内也可下载
 - 🌗 **跟随系统深浅色**：暖纸色 / 深墨色，无需手动切换
 - 🌐 **中日双语**：界面、发型名、风格描述全部双语，偏好本地记忆
 - 📦 **零依赖**：单个 HTML，数据内嵌，`file://` 双击即开
@@ -74,7 +74,7 @@
 ├── data/
 │   ├── portrait.json       # 原始日文数据（1499 条）
 │   ├── portrait-zh.json    # 中文数据（含日中对照字段）
-│   ├── ranking.json        # 下载排行数据
+│   ├── ranking.json        # 原站下载排行快照（页面已不使用，仅存档）
 │   ├── meta.json           # 分区 / 发型 / 风格元数据
 │   └── translations.csv    # 日⇄中对照表（54 条）
 ├── scripts/
@@ -172,7 +172,8 @@ CC0 允许商用、修改、再分发，无需署名。
 
 | 日期 | 变更 |
 |---|---|
-| 2026-10-30 | 初版：1499 张元数据镜像、54 条汉化、分页画廊、下载排行、中日双语 |
+| 2026-10-30 | 初版：1499 张元数据镜像、54 条汉化、分页画廊、中日双语 |
+| 2026-10-30 | 卡片加 PNG 下载按钮、移除下载排行、首屏改为 2×2 三图布局 |
 
 ## 🤝 贡献指南
 
@@ -210,8 +211,7 @@ CC0 允许商用、修改、再分发，无需署名。
 - 💇 **髪型で絞り込み**：ショート 727 / ミディアム 376 / セミロング 260 / ロング 136
 - 📄 **ページング**：60 枚ずつ、800px 手前で自動追加
 - 🖼️ **ライトボックス**：サムネ → 原寸の段階読み込み、`←` `→` で移動
-- ⬇️ **原寸ダウンロード**：ライトボックス内から直接
-- 🏆 **ダウンロードランキング**：総合 + 髪型別 Top10
+- ⬇️ **原寸ダウンロード**：カードからも、ライトボックス内からも直接
 - 🌗 **システムの配色に追従**、🌐 **中日 2 言語**
 - 📦 **依存ゼロ**：単一 HTML、`file://` でそのまま開ける
 
@@ -264,8 +264,7 @@ Original author: あぎ（[@agi_aibusi](https://x.com/agi_aibusi)）
 - 💇 **Filter by hair**: short 727 / medium 376 / semi-long 260 / long 136
 - 📄 **Pagination**: 60 per page, auto-loads 800px before the bottom
 - 🖼️ **Lightbox**: progressive thumb → full load, `←` `→` to step, `Esc` to close
-- ⬇️ **One-click original download** straight from the lightbox
-- 🏆 **Download ranking**: overall + per hair type, top 10
+- ⬇️ **One-click original download** from each card, or from the lightbox
 - 🌗 **Follows system color scheme**, 🌐 **Chinese / Japanese UI**
 - 📦 **Zero dependencies**: single HTML file, opens via `file://`
 
