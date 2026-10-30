@@ -52,7 +52,7 @@ payload = json.dumps({
 }, ensure_ascii=False, separators=(",", ":"))
 
 html = r"""<!doctype html>
-<html lang="zh-CN" data-lang="zh">
+<html lang="zh-CN" data-theme="light" data-lang="zh">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -77,6 +77,12 @@ html = r"""<!doctype html>
 <meta name="twitter:title" content="AI 模特脸库 · 1499 张人脸参考图">
 <meta name="twitter:description" content="让 AI 生成的角色保持同一张脸。CC0 免费使用。">
 <meta name="twitter:image" content="__SITE__/og-cover.jpg">
+<script>
+(function(){try{
+  var t=localStorage.getItem('pt.theme'); if(t==='light'||t==='dark') document.documentElement.dataset.theme=t;
+  var l=localStorage.getItem('pt.lang');  if(l==='zh'||l==='ja')      document.documentElement.dataset.lang=l;
+}catch(e){}})();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%23f6f3ee'/%3E%3Ctext x='16' y='23' font-size='18' font-family='Georgia,serif' font-style='italic' text-anchor='middle' fill='%231d1b19'%3EF%3C/text%3E%3C/svg%3E">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"ImageGallery","name":"AI 模特脸库","alternateName":"AI Model Face Reference","url":"__SITE__/","inLanguage":["zh-CN","ja"],"numberOfItems":1499,"about":"AI 绘画与视频的角色脸部一致性参考","isAccessibleForFree":true,"license":"https://creativecommons.org/publicdomain/zero/1.0/"}
@@ -89,9 +95,9 @@ html = r"""<!doctype html>
   --latin:"Cormorant Garamond",Georgia,"Times New Roman",serif;
   --sans:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
 }
-@media (prefers-color-scheme:dark){
-  :root{ --bg:#151412; --paper:#1d1c1a; --fg:#efe9e1; --muted:#a39b91;
-         --line:#2f2c28; --accent:#efe9e1; --accent-fg:#151412; --rose:#d9a294; }
+html[data-theme="dark"]{
+  --bg:#151412; --paper:#1d1c1a; --fg:#efe9e1; --muted:#a39b91;
+  --line:#2f2c28; --accent:#efe9e1; --accent-fg:#151412; --rose:#d9a294;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -118,9 +124,15 @@ img{max-width:100%}
 .nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;
   transform:scaleX(0);transform-origin:right;transition:transform .3s ease}
 .nav a:hover::after{transform:scaleX(1);transform-origin:left}
-.nav .pill{border:1px solid var(--fg);border-radius:999px;padding:6px 16px}
-.nav .pill::after{display:none}
-.nav .pill:hover{background:var(--fg);color:var(--bg)}
+.switches{display:flex;gap:8px;align-items:center}
+.switch{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--paper)}
+.switch button{height:32px;min-width:32px;padding:0 11px;border:0;background:transparent;color:var(--muted);
+  font:inherit;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:.15s;white-space:nowrap;letter-spacing:.04em}
+.switch button+button{border-left:1px solid var(--line)}
+.switch button:hover{background:var(--line);color:var(--fg)}
+.switch button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);font-weight:600}
+.switch svg{width:14px;height:14px;display:block}
 
 /* ── Hero ── */
 .hero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
@@ -274,7 +286,16 @@ img{max-width:100%}
     <nav class="nav" aria-label="菜单">
       <a href="#tips" data-t="tipsTitle">使用建议</a>
       <a href="#rules" data-t="rulesTitle">使用规则</a>
-      <a class="pill" href="#" id="langSw" role="button" aria-label="切换语言">日本語</a>
+      <div class="switches">
+        <div class="switch" id="themeSw" role="group" aria-label="主题">
+          <button type="button" data-t="light" title="Light" aria-label="Light"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg></button>
+          <button type="button" data-t="dark" title="Dark" aria-label="Dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        </div>
+        <div class="switch" id="langSw" role="group" aria-label="语言">
+          <button type="button" data-l="zh">中文</button>
+          <button type="button" data-l="ja">日本語</button>
+        </div>
+      </div>
     </nav>
   </div>
 
@@ -362,7 +383,8 @@ const UI = DB.ui;
 const HAIRS = DB.hairOrder;
 const PAGE = 60;
 
-let LANG = (localStorage.getItem('pt.lang') === 'ja') ? 'ja' : 'zh';
+let LANG  = document.documentElement.dataset.lang  || 'zh';
+let THEME = document.documentElement.dataset.theme || 'light';
 const S = { sec: 'face', hair: 'all', n: PAGE };
 
 const $ = s => document.querySelector(s);
@@ -386,13 +408,16 @@ function applyStatic(){
     const k = el.dataset.t;
     if (UI[LANG][k] !== undefined) el.textContent = UI[LANG][k];
   });
-  $('#langSw').textContent = LANG === 'ja' ? '中文' : '日本語';
   $('#seg-face').textContent = LANG === 'ja' ? 'フェイス' : '面部';
   $('#seg-styling').textContent = LANG === 'ja' ? 'スタイリング' : '造型';
   const tl = $('#tips-list'), rl = $('#rules-list');
   tl.innerHTML = DB.tips[LANG].map(x => '<li>' + esc(x) + '</li>').join('');
   rl.innerHTML = DB.rules[LANG].map(x => '<li>' + esc(x) + '</li>').join('');
   $('#rules-note').textContent = DB.rulesNote[LANG];
+  document.querySelectorAll('#themeSw button').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.t === THEME ? 'true' : 'false'));
+  document.querySelectorAll('#langSw button').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.l === LANG ? 'true' : 'false'));
   $('#lb-dl').textContent = t('download');
   $('#lb-close').setAttribute('aria-label', t('close'));
   $('#lb-prev').setAttribute('aria-label', t('prev'));
@@ -556,11 +581,20 @@ $('#filters').addEventListener('click', e => {
   drawFilters(); draw(); writeHash();
 });
 $('#langSw').addEventListener('click', e => {
-  e.preventDefault();
-  LANG = LANG === 'ja' ? 'zh' : 'ja';
-  localStorage.setItem('pt.lang', LANG);
+  const b = e.target.closest('[data-l]'); if (!b || b.dataset.l === LANG) return;
+  LANG = b.dataset.l;
+  try { localStorage.setItem('pt.lang', LANG); } catch(_){}
+  document.documentElement.dataset.lang = LANG;
   applyStatic(); drawSections(); drawFilters(); draw();
   if (!$('#lightbox').hidden) showLb();
+});
+
+$('#themeSw').addEventListener('click', e => {
+  const b = e.target.closest('[data-t]'); if (!b || b.dataset.t === THEME) return;
+  THEME = b.dataset.t;
+  try { localStorage.setItem('pt.theme', THEME); } catch(_){}
+  document.documentElement.dataset.theme = THEME;
+  applyStatic();
 });
 
 $('#lb-close').addEventListener('click', closeLb);
