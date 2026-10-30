@@ -6,7 +6,7 @@
 
 [中文](#中文) · [日本語](#日本語) · [English](#english)
 
-> **同系列** · [姿势集](https://github.com/Brilliant666/ai-pose-gallery-cn) · [深度姿势集](https://github.com/Brilliant666/ai-pose-depth-gallery-cn) · [服装集](https://github.com/Brilliant666/ai-costume-gallery-cn) · [**四站合一仓库 →**](https://github.com/Brilliant666/ai-image-gallery)
+> **同系列** · [在线浏览 photoai.life](https://photoai.life/) · [姿势集](https://github.com/Brilliant666/ai-pose-gallery-cn) · [深度姿势集](https://github.com/Brilliant666/ai-pose-depth-gallery-cn) · [服装集](https://github.com/Brilliant666/ai-costume-gallery-cn) · [**四站合一仓库 →**](https://github.com/Brilliant666/ai-image-gallery)
 
 > ✅ **本站素材为 CC0 1.0 公有领域**，可自由商用、修改、再分发。
 > 与同系列另两个图库（pose / costume）的授权性质完全不同。详见 [NOTICE.md](NOTICE.md)。
