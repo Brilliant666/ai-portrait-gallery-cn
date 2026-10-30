@@ -592,14 +592,22 @@ function readHash(){
 }
 
 /* ── 首屏 ── */
+// 首屏配图：人工挑选的三张，左侧竖图 + 右侧两张横图
+const HERO_IDS = ['fd88e2d27b2', 'f8ef1f742be', 'fbb3f167ec2'];
+
 function drawHero(){
-  // 首屏 3 图：左侧一张竖图 + 右侧两张横图，与原站布局一致
+  const byId = id => ITEMS.find(i => i.i === id);
+  let pick = HERO_IDS.map(byId).filter(Boolean);
+  // 兜底：ID 缺失时按比例取样，保证首屏永远有三张
+  if (pick.length < 3){
+    const face = ITEMS.filter(i => i.s === 'face');
+    const at = p => face[Math.floor(face.length * p)] || face[0];
+    pick = pick.concat([at(0.3), at(0.6), at(0.8)]).filter(Boolean).slice(0, 3);
+  }
+  $('#hero-faces').innerHTML = pick.slice(0, 3).map(it =>
+    '<img loading="eager" decoding="async" src="' + esc(it.t) + '" alt="">').join('');
   const face = ITEMS.filter(i => i.s === 'face');
   const sty  = ITEMS.filter(i => i.s === 'styling');
-  const at = (arr, p) => arr[Math.floor(arr.length * p)] || arr[0];
-  const pick = [at(face, 0.62), at(sty, 0.18), at(sty, 0.74)];
-  $('#hero-faces').innerHTML = pick.map(it =>
-    '<img loading="eager" decoding="async" src="' + esc(it.t) + '" alt="">').join('');
   $('#stat-face').textContent = fmt(face.length);
   $('#stat-styling').textContent = fmt(sty.length);
 }
